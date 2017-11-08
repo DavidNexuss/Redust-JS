@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Redust JS</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body style="margin : 0">
+    <canvas id="canvas" style="width: 100%; height: 100%; position: absolute;" width="800" height="600"></canvas>
+    <script>
+    
+    class Dust{
+
+        constructor(X,Y){
+
+            this.x = X
+            this.y = Y
+            this.velx = 0
+            this.vely = 0
+
+        }
+    }
+
+    var dust = []
+    var canvas = document.getElementById('canvas')
+
+    var mass = 1/100000
+
+    $('canvas').click(function(event){
+
+        dust.push(new Dust(event.clientX,event.clientY))
+        console.log(pos.x)
+    })
+    update()
+    draw()
+    function update(){
+
+        dust.forEach(function(A) {
+            
+            dust.forEach(function(B) {
+                
+                if(A !== B){
+
+                    if((B.x - A.x) != 0 && (B.y - A.y) != 0){
+                        
+                        A.velx += (mass/(B.x - A.x)^2)*     ( (B.x - A.x) / (Math.abs(B.x - A.x)) )    
+                        A.vely += (mass/(B.y - A.y)^2)*     ( (B.y - A.y) / (Math.abs(B.y - A.y)) ) 
+
+                    }
+                           
+                }
+            }, this);
+
+            A.x += A.velx
+            A.y += A.vely
+        }, this);
+
+        setTimeout(update,50)
+    }
+    dust.push(new Dust(50,50))
+    dust.push(new Dust(90,80))
+    function draw(){
+        
+        
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            dust.forEach(function(A) {
+
+                ctx.fillRect(A.x,A.y,1,1)
+            }, this);
+            
+            setTimeout(draw,1000/90)
+        }
+    }
+
+    
+
+    function getMousePos(canvas, evt) {
+    
+        var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+    }
+    
+/* var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
+    renderer.resize(window.innerWidth,window.innerHeight)
+    document.body.appendChild(renderer.view);*/
+
+    </script>
+</body>
+
+
+</html>
