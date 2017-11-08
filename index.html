@@ -17,8 +17,12 @@
 
             this.x = X
             this.y = Y
+
             this.velx = 0
             this.vely = 0
+
+            this.ax = 0
+            this.ay = 0
 
         }
     }
@@ -26,8 +30,8 @@
     var dust = []
     var canvas = document.getElementById('canvas')
 
-    var mass = 1/100000
-
+    var mass = 1/100
+    var G = 1/3000
     $('canvas').click(function(event){
 
         dust.push(new Dust(event.clientX,event.clientY))
@@ -43,21 +47,29 @@
                 
                 if(A !== B){
 
-                    if((B.x - A.x) != 0 && (B.y - A.y) != 0){
+                    abort = false
+
+                    if((B.x - A.x) != 0 && (B.y - A.y) != 0 && !abort){
                         
-                        A.velx += (mass/(B.x - A.x)^2)*     ( (B.x - A.x) / (Math.abs(B.x - A.x)) )    
-                        A.vely += (mass/(B.y - A.y)^2)*     ( (B.y - A.y) / (Math.abs(B.y - A.y)) ) 
+                        A.ax += (mass * G/(B.x - A.x)^2)*     ( (B.x - A.x) / (Math.abs(B.x - A.x)) )    
+                        A.ay += (mass * G/(B.y - A.y)^2)*     ( (B.y - A.y) / (Math.abs(B.y - A.y)) ) 
 
                     }
                            
                 }
             }, this);
 
+            A.velx += A.ax * mass
+            A.vely += A.ay * mass 
+
             A.x += A.velx
             A.y += A.vely
+
+            A.ax = 0
+            A.ay = 0
         }, this);
 
-        setTimeout(update,50)
+        setTimeout(update,20)
     }
     dust.push(new Dust(50,50))
     dust.push(new Dust(90,80))
